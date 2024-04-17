@@ -80,8 +80,7 @@ sed -i -e 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT=\"${grub
 grub-mkconfig -o /boot/grub/grub.cfg
 printf "%s\n%s" "${ROOTPASS}" "${ROOTPASS}" | passwd root
 systemctl enable NetworkManager
-ssh-keygen -b 3072 -t ed25519 -f /root/.ssh/id_ed25519 -q -N ""
-cat /root/.ssh/id_ed25519 > /root/.ssh/authorized_keys
+sed -i -e 's/^#*PermitRootLogin .*$/PermitRootLogin Yes/' /etc/ssh/sshd_config
 systemctl enable sshd
 EOF
 arch-chroot /mnt sh /root/next.sh
