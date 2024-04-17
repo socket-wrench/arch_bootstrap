@@ -1,21 +1,40 @@
 #!/usr/bin/bash
 # Build script for base OS setup for wrenchbox
-#
-# Set variable
-DRIVE=/dev/nvme0n1
-BOOT_MB=2048
-SWAP_MB=32768
-ROOT_MB=1048576
-TIMEZONE="US/Pacific"
-LANG="en_US.UTF-8"
-FONT=""
-KEYMAP="us"
-HOSTNAME="wrenchbox.socketwrench.net"
-TESTURL="archlinux.org"
-packages=("base" "linux" "linux-lts" "linux-firmware" "lvm2" "grub" "efibootmgr" "nvidia" "nvidia-lts" "nvidia-utils" "networkmanager" "vi" "vim" "ansible" "git" "openssh" "sshpass")
-hooks=("base" "systemd" "udev" "autodetect" "microcode" "modconf" "kms" "keyboard" "keymap" "consolefont" "block" "lvm2" "filesystems" "fsck")
-modules=("nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm")
-grubcmdlinedefault=("loglevel=3" "nvidia_drm.modeset=1" "nvidia_drm.fbdev=1")
+
+# Get command arguments
+while getopts :f:hp: opt
+do
+  case ${opt} in
+    f)
+      if [ -f ${OPTARG} ] && [ -s ${OPTARG} ]
+      then
+        source ${OPTARG}
+      else
+        printf "File %s is not a regular file or is zero size\n" "${OPTARG}" >&2
+        exit 1
+      fi
+      ;;
+    p)
+      ROOTPASS="${OPTARG}"
+      ;;
+    h)
+      printf "%s\n" ${0}
+      printf "Script to install a basic build of arch linux on GPT LVM and EUFI\n"
+      printf "%s\t%s\n" "-f" "(REQUIRED) Configuration file for host)"
+      printf "%s\t%s\n" "-p" "Root password for host once built"
+      printf "%s\t%s\n" "-h" "Show this help"
+      exit 2
+      ;;
+    :)
+      printf "%s options was passed but no argument supplied. Use -h for syntax" "${OPTARG}" >&2
+      exit 1
+      ;;
+    \?)
+      printf "Unkdown option: -%s\n" "${OPTARG}" >&2
+      exit 1
+      ;;
+  esac
+done
 
 # Setup environment
 loadkeys ${KEYMAP}
@@ -27,7 +46,10 @@ then echo "No internet connection.  Troubleshoot and try again."
 fi
 
 # Prompt for root password
-read -s -p "Root Password: " ROOTPASS
+if [[ -v ROOTPASS ]]
+then
+  read -s -p "Root Password: " ROOTPASS
+fi
 
 # Remove existing partition table
 for part in $(parted -s ${DRIVE} print | grep "^ [0-9]" | awk '{print $1}')
