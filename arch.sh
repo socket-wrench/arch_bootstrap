@@ -2,14 +2,14 @@
 # Build script for base OS setup for wrenchbox
 #
 # Set variable
-DRIVE=/dev/nvme0n1
+DRIVE=/dev/sda
 BOOT_MB=2048
-SWAP_MB=32768
-ROOT_MB=1048576
+SWAP_MB=4096
+ROOT_MB=10240
 TIMEZONE="US/Pacific"
 LANG="en_US.UTF-8"
 KEYMAP="us"
-HOSTNAME="wrenchbox.socketwrench.net"
+HOSTNAME="arch_test_03.socketwrench.net"
 TESTURL="archlinux.org"
 packages=("base" "linux" "linux-lts" "linux-firmware" "lvm2" "grub" "efibootmgr" "nvidia" "nvidia-utils" "networkmanager" "vi" "vim" "ansible" "git" "openssh" "sshpass")
 hooks=("base" "systemd" "udev" "autodetect" "microcode" "modconf" "kms" "keyboard" "keymap" "consolefont" "block" "lvm2" "filesystems" "fsck")
