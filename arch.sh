@@ -11,7 +11,7 @@ LANG="en_US.UTF-8"
 KEYMAP="us"
 HOSTNAME="arch_test_03.socketwrench.net"
 TESTURL="archlinux.org"
-packages=("base" "linux" "linux-lts" "linux-firmware" "lvm2" "grub" "efibootmgr" "nvidia" "nvidia-utils" "networkmanager" "vi" "vim" "ansible" "git" "openssh" "sshpass")
+packages=("base" "linux" "linux-lts" "linux-firmware" "lvm2" "grub" "efibootmgr" "nvidia" "nvidia-lts" "nvidia-utils" "networkmanager" "vi" "vim" "ansible" "git" "openssh" "sshpass")
 hooks=("base" "systemd" "udev" "autodetect" "microcode" "modconf" "kms" "keyboard" "keymap" "consolefont" "block" "lvm2" "filesystems" "fsck")
 modules=("nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm")
 grubcmdlinedefault=("loglevel=3" "nvidia_drm.modeset=1" "nvidia_drm.fbdev=1")
