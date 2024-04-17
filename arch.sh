@@ -1,6 +1,9 @@
 #!/usr/bin/bash
 # Build script for base OS setup for wrenchbox
 
+# Clear ROOTPASS var (just in case)
+unset ROOTPASS
+
 # Get command arguments
 while getopts :f:hp: opt
 do
@@ -46,7 +49,7 @@ then echo "No internet connection.  Troubleshoot and try again."
 fi
 
 # Prompt for root password
-if [[ -v ROOTPASS ]]
+if [[ ! -v ROOTPASS ]]
 then
   read -s -p "Root Password: " ROOTPASS
 fi
