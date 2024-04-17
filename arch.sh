@@ -8,10 +8,11 @@ SWAP_MB=32768
 ROOT_MB=1048576
 TIMEZONE="US/Pacific"
 LANG="en_US.UTF-8"
+FONT=""
 KEYMAP="us"
 HOSTNAME="wrenchbox.socketwrench.net"
 TESTURL="archlinux.org"
-packages=("base" "linux" "linux-lts" "linux-firmware" "lvm2" "grub" "efibootmgr" "nvidia" "nvidia-utils" "networkmanager" "vi" "vim" "ansible" "git" "openssh" "sshpass")
+packages=("base" "linux" "linux-lts" "linux-firmware" "lvm2" "grub" "efibootmgr" "nvidia" "nvidia-lts" "nvidia-utils" "networkmanager" "vi" "vim" "ansible" "git" "openssh" "sshpass")
 hooks=("base" "systemd" "udev" "autodetect" "microcode" "modconf" "kms" "keyboard" "keymap" "consolefont" "block" "lvm2" "filesystems" "fsck")
 modules=("nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm")
 grubcmdlinedefault=("loglevel=3" "nvidia_drm.modeset=1" "nvidia_drm.fbdev=1")
@@ -21,8 +22,7 @@ loadkeys ${KEYMAP}
 
 # Check for internet connectivity
 if ! ping -c4 ${TESTURL}
-then
-  echo "No internet connection.  Troubleshoot and try again."
+then echo "No internet connection.  Troubleshoot and try again."
   exit 1
 fi
 
@@ -70,6 +70,7 @@ sed -i -e 's/#${LANG}/${LANG}/' /etc/locale.gen
 locale-gen
 printf "LANG=${LANG}\n" > /etc/locale.conf
 printf "KEYMAP=${KEYMAP}\n" > /etc/vconsole.conf
+printf "FONT=${FONT}\n" >> /etc/vconsole.conf
 printf "${HOSTNAME}\n" > /etc/hostname
 printf "127.0.0.1 localhost\n" > /etc/hosts
 printf "127.0.0.1 ${HOSTNAME} $(cut -d. -f1 <<< ${HOSTNAME})" >> /etc/hosts
@@ -79,6 +80,10 @@ grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 sed -i -e 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT=\"${grubcmdlinedefault[@]}\"/' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 printf "%s\n%s" "${ROOTPASS}" "${ROOTPASS}" | passwd root
+systemctl enable NetworkManager
+ssh-keygen -b 3072 -t ed25519 -f /root/.ssh/id_ed25519 -q -N ""
+cat /root/.ssh/id_ed25519 > /root/.ssh/authorized_keys
+systemctl enable sshd
 EOF
 arch-chroot /mnt sh /root/next.sh
 
