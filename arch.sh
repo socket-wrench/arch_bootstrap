@@ -79,5 +79,6 @@ sed -i -e 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT=\"${grub
 grub-mkconfig -o /boot/grub/grub.cfg
 printf "%s\n%s" "${ROOTPASS}" "${ROOTPASS}" | passwd root
 EOF
+arch-chroot /mnt sh /root/next.sh
 
 exit 0
