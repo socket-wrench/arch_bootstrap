@@ -74,6 +74,7 @@ printf "${HOSTNAME}\n" > /etc/hostname
 printf "127.0.0.1 localhost\n" > /etc/hosts
 printf "127.0.0.1 ${HOSTNAME} $(cut -d. -f1 <<< ${HOSTNAME})" >> /etc/hosts
 sed -i -e 's/^HOOKS=.*$/HOOKS=\(${hooks[@]}\)/' -e 's/^MODULES=.*$/MODULES=\(${modules[@]}\)/' /etc/mkinitcpio.conf
+mkinitcpio -P
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 sed -i -e 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT=\"${grubcmdlinedefault[@]}\"/' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
