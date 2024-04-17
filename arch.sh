@@ -9,13 +9,7 @@ while getopts :f:hp: opt
 do
   case ${opt} in
     f)
-      if [ -f ${OPTARG} ] && [ -s ${OPTARG} ]
-      then
-        source ${OPTARG}
-      else
-        printf "File %s is not a regular file or is zero size\n" "${OPTARG}" >&2
-        exit 1
-      fi
+      CONFIGFILE=${OPTARG}
       ;;
     p)
       ROOTPASS="${OPTARG}"
@@ -38,6 +32,15 @@ do
       ;;
   esac
 done
+
+# Confirm config file is valid
+if [ -v CONFIGFILE ] && [ -f ${CONFIGFILE} ] && [ -s ${CONFIGFILE} ]
+then
+  source ${CONFIGFILE}
+else
+ printf "Config file not set, file does not exist or is zero size. See help (-h) and confirm path to file is correctly set\n" >&2
+ exit 1
+fi
 
 # Setup environment
 loadkeys ${KEYMAP}
