@@ -17,7 +17,7 @@ do
     h)
       printf "%s\n" ${0}
       printf "Script to install a basic build of arch linux on GPT LVM and EUFI\n"
-      printf "%s\t%s\n" "-f" "(REQUIRED) Configuration file for host)"
+      printf "%s\t%s\n" "-f" "(REQUIRED) Configuration file for host"
       printf "%s\t%s\n" "-p" "Root password for host once built"
       printf "%s\t%s\n" "-h" "Show this help"
       exit 2
@@ -97,11 +97,9 @@ hwclock --systohc
 sed -i -e 's/#${LANG}/${LANG}/' /etc/locale.gen
 locale-gen
 printf "LANG=${LANG}\n" > /etc/locale.conf
-printf "KEYMAP=${KEYMAP}\n" > /etc/vconsole.conf
-printf "FONT=${FONT}\n" >> /etc/vconsole.conf
+printf "KEYMAP=${KEYMAP}\nFONT=${FONT}\n" > /etc/vconsole.conf
 printf "${HOSTNAME}\n" > /etc/hostname
-printf "127.0.0.1 localhost\n" > /etc/hosts
-printf "127.0.0.1 ${HOSTNAME} $(cut -d. -f1 <<< ${HOSTNAME})" >> /etc/hosts
+printf "127.0.0.1 localhost\n127.0.0.1 ${HOSTNAME} $(cut -d. -f1 <<< ${HOSTNAME})" > /etc/hosts
 sed -i -e 's/^HOOKS=.*$/HOOKS=\(${hooks[@]}\)/' -e 's/^MODULES=.*$/MODULES=\(${modules[@]}\)/' /etc/mkinitcpio.conf
 mkinitcpio -P
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
