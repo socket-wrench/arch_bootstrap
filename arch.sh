@@ -42,6 +42,14 @@ else
  exit 1
 fi
 
+# Set drive partition schema
+if [[ ${DRIVE} =~ /dev/nvmen. ]]
+then
+  PARTPREFIX="${DRIVE}p"
+else
+  PARTPREFIX="${DRIVE}"
+fi
+
 # Setup environment
 loadkeys ${KEYMAP}
 
@@ -72,9 +80,9 @@ parted -s ${DRIVE} set 2 lvm on
 
 # Create Filesystems and LVs
 partprobe
-mkfs.fat -F 32 ${DRIVE}1
-pvcreate ${DRIVE}2
-vgcreate rootvg ${DRIVE}2
+mkfs.fat -F 32 ${PARTPREFIX}1
+pvcreate ${PARTPREFIX}2
+vgcreate rootvg ${PARTPREFIX}2
 lvcreate -n swaplv -L ${SWAP_MB}M rootvg
 lvcreate -n rootlv -L ${ROOT_MB}M rootvg
 mkfs.ext4 /dev/rootvg/rootlv
@@ -82,7 +90,7 @@ mkswap /dev/rootvg/swaplv
 
 # Mount the drives
 mount /dev/rootvg/rootlv /mnt
-mount --mkdir ${DRIVE}1 /mnt/boot
+mount --mkdir ${PARTPREFIX}1 /mnt/boot
 swapon /dev/rootvg/swaplv
 
 # Pacstrap to do initial build
