@@ -6,6 +6,7 @@ SWAP_MB=4096
 ROOT_MB=20480
 TIMEZONE="US/Pacific"
 LANG="en_US.UTF-8"
+FONT="lat2-16"
 KEYMAP="us"
 HOSTNAME="arch-test-03.socketwrench.net"
 TESTURL="archlinux.org"
