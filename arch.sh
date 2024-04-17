@@ -43,7 +43,7 @@ else
 fi
 
 # Set drive partition schema
-if [[ ${DRIVE} =~ /dev/nvmen. ]]
+if [[ ${DRIVE} =~ /dev/nvme.n. ]]
 then
   PARTPREFIX="${DRIVE}p"
 else
