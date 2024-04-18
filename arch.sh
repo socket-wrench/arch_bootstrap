@@ -81,10 +81,10 @@ parted -s ${DRIVE} set 2 lvm on
 # Create Filesystems and LVs
 partprobe
 mkfs.fat -F 32 ${PARTPREFIX}1
-pvcreate ${PARTPREFIX}2
-vgcreate rootvg ${PARTPREFIX}2
-lvcreate -n swaplv -L ${SWAP_MB}M rootvg
-lvcreate -n rootlv -L ${ROOT_MB}M rootvg
+pvcreate --force ${PARTPREFIX}2
+vgcreate --force rootvg ${PARTPREFIX}2
+lvcreate --yes --name swaplv --size ${SWAP_MB}M rootvg
+lvcreate --yes --name rootlv --size ${ROOT_MB}M rootvg
 mkfs.ext4 /dev/rootvg/rootlv
 mkswap /dev/rootvg/swaplv
 
