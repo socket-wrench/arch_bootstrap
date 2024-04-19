@@ -65,6 +65,20 @@ then
   read -s -p "Root Password: " ROOTPASS
 fi
 
+# Remove any existing LVM configuration on DRIVE
+for pv in $( pvs | grep -oh "${PARTPREFIX}[0-9]")
+do
+  for vg in $(vgs $(pvs $pv | cut -d\  -f4) | tail -n +2 | cut -d\  -f3)
+  do
+    for lv in $(lvs $vg | tail -n +2 | cut -d\  -f3)
+    do
+      lvremove --force --yes /dev/$vg/$lv
+    done
+    vgremove --force --yes $vg
+  done
+  pvremove --force --force --yes $pv
+done
+
 # Remove existing partition table
 for part in $(parted -s ${DRIVE} print | grep "^ [0-9]" | awk '{print $1}')
 do
